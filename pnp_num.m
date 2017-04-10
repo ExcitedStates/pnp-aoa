@@ -47,7 +47,7 @@ faraday = avo * e_c;
 dt = 1e-12; % s
 dx = 0.1e-9; % m
 
-l_t = 0.5e6 * dt;
+l_t = 5e6 * dt;
 l_x = 22.1e-9;
 l_y = 60.1e-9;
 
@@ -303,7 +303,7 @@ for t = 1:n_t
     % update C
     
     C = C - dt/dx * ( diff(Jx, 1, 2) + diff(Jy, 1, 1) );
-    R(434,111) =  kr * dt * (C(434,111,1)/k_m) / (6e23) / dx^2 / l_x;
+    R(434,111) =  kr * dt * (C(434,111,1)/k_m) / (6e23) / dx^3;
     C(:,:,1) = C(:,:,1) - R;
 %     C(1,:,:) = c_bulk;
     
