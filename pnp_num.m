@@ -351,7 +351,10 @@ for t = 1:n_t
         %     print('-dpng', ['pot_sc050_' int0str(t,4) '.png']);
         end
     end
-        
+    if mod(t, 500000) == 0
+        save(['ana_num_' int0str(cc,4) 'nm_k' int0str(kk, 2) '_sc_sig' int0str(1000*sig, 6) '_pore' int0str(10*pore_size, 2) '_t' int0str(t, 7)  '.mat'],...
+    'C0','C','c_dtr','-v7.3');
+    end    
     
     
     
@@ -368,7 +371,7 @@ toc
 P = -cumsum( dx * Ey(1:end,:) );
 
 
-save(['ana_num_' int0str(cc,3) 'nm_k' int0str(kk, 2) '_sc_sig' int0str(1000*sig, 6) '_pore' int0str(10*pore_size, 2)  '.mat'],...
+save(['ana_num_' int0str(cc,4) 'nm_k' int0str(kk, 2) '_sc_sig' int0str(1000*sig, 6) '_pore' int0str(10*pore_size, 2)  '.mat'],...
     'C0','C','P','Ex','Ey','Jx','Jy',...
     'convg_sim','mass_sim','chrg_sim','c_dtr','-v7.3');
 % 
