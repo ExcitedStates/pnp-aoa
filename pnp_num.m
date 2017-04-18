@@ -1,4 +1,4 @@
-function pnp_num(sig, kk, cc, pore_size)
+function pnp_num(sig, kk, cc, pore_size, amo_y, amo_x)
 
 %% quick setting
 
@@ -8,19 +8,32 @@ switch nargin
         sig = 1;
         cc = 10;
 	pore_size = 1.3;
+	amo_y = 434;
+	amo_x = 111;
     case 1,
         kk = 0;
         cc = 10;
 	pore_size = 1.3;
+	amo_y = 434;
+	amo_x = 111;
     case 2,
         cc = 10;
 	pore_size = 1.3;
+	amo_y = 434;
+	amo_x = 111;
     case 3,
 	pore_size = 1.3;
+	amo_y = 434;
+	amo_x = 111;
+    case 4,
+	amo_y = 434;
+	amo_x = 111;
+    case 5,
+	amo_x = 111;
 end
 
 disp(['(' num2str(sig) 'x, ' num2str(kk) ' rate, ' num2str(cc) 'nM, '...
-    num2str(pore_size) ' nm )']);
+    num2str(pore_size) ' nm, amo_x ' num2str(amo_x) ' A, amo_y ' num2str(amo_y) ' A'  ' )']);
         
 
 %% sim setting
@@ -303,7 +316,7 @@ for t = 1:n_t
     % update C
     
     C = C - dt/dx * ( diff(Jx, 1, 2) + diff(Jy, 1, 1) );
-    R(434,111) =  kr * dt * (C(434,111,1)/k_m) / (6e23) / dx^3;
+    R(amo_y,amo_x) =  kr * dt * (C(amo_y,amo_x,1)/k_m) / (6e23) / dx^3;
     C(:,:,1) = C(:,:,1) - R;
 %     C(1,:,:) = c_bulk;
     
@@ -317,7 +330,7 @@ for t = 1:n_t
     
     mass_sim(t) = sum( C(:) );
     chrg_sim(t) = sum( sum( C(:,:,1) - C(:,:,2) ) );
-    c_dtr(t) = C(434,111,1);
+    c_dtr(t) = C(amo_y,amo_x,1);
     
     if mod(t,n_display) == 0
         disp(['CONVG = ' num2str(c_conv_er) ' @ step ' int2str(t)]);
@@ -352,8 +365,11 @@ for t = 1:n_t
         end
     end
     if mod(t, 500000) == 0
-        save(['ana_num_' int0str(cc,4) 'nm_k' int0str(kk, 2) '_sc_sig' int0str(1000*sig, 6) '_pore' int0str(10*pore_size, 2) '_t' int0str(t, 7)  '.mat'],...
-    'C0','C','c_dtr','-v7.3');
+	disp('saving intermediate file');
+        save(['ana_num_' int0str(cc,4) 'nm_k' int0str(kk, 2) '_sc_sig' int0str(1000*sig, 6)...
+    '_pore' int0str(10*pore_size, 2) '_y' int2str(amo_y) 'x' int2str(amo_x) ...
+    '_t' int0str(t, 7)  '.mat'],...
+    'C','c_dtr','-v7.3');
     end    
     
     
@@ -371,7 +387,9 @@ toc
 P = -cumsum( dx * Ey(1:end,:) );
 
 
-save(['ana_num_' int0str(cc,4) 'nm_k' int0str(kk, 2) '_sc_sig' int0str(1000*sig, 6) '_pore' int0str(10*pore_size, 2)  '.mat'],...
+save(['ana_num_' int0str(cc,4) 'nm_k' int0str(kk, 2) '_sc_sig' int0str(1000*sig, 6)...
+    '_pore' int0str(10*pore_size, 2) '_y' int2str(amo_y) 'x' int2str(amo_x) ...
+    '.mat'],...
     'C0','C','P','Ex','Ey','Jx','Jy',...
     'convg_sim','mass_sim','chrg_sim','c_dtr','-v7.3');
 % 
